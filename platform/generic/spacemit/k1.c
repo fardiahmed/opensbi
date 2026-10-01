@@ -93,6 +93,25 @@ static int spacemit_k1_early_init(bool cold_boot)
 	return 0;
 }
 
+/*
+ * The SpacemiT device trees only give riscv,isa = "rv64imafdcv": declare the X60 extensions that
+ * need menvcfg enables, or U-Boot/Linux cache maintenance and Svpbmt mappings trap.
+ */
+static int spacemit_k1_extensions_init(struct sbi_hart_features *hfeatures)
+{
+	struct sbi_scratch *scratch = sbi_scratch_thishart_ptr();
+	int rc;
+
+	rc = generic_extensions_init(hfeatures);
+	if (rc)
+		return rc;
+
+	sbi_hart_update_extension(scratch, SBI_HART_EXT_ZICBOM, true);
+	sbi_hart_update_extension(scratch, SBI_HART_EXT_ZICBOZ, true);
+	sbi_hart_update_extension(scratch, SBI_HART_EXT_SVPBMT, true);
+	return 0;
+}
+
 static bool spacemit_cold_boot_allowed(u32 hartid)
 {
 	csr_set(CSR_ML2SETUP, 1 << (hartid % PLATFORM_MAX_CPUS_PER_CLUSTER));
@@ -105,6 +124,7 @@ static int spacemit_k1_platform_init(const void *fdt, int nodeoff,
 {
 	generic_platform_ops.early_init = spacemit_k1_early_init;
 	generic_platform_ops.cold_boot_allowed = spacemit_cold_boot_allowed;
+	generic_platform_ops.extensions_init = spacemit_k1_extensions_init;
 
 	return 0;
 }
