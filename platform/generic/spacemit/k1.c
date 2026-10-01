@@ -104,6 +104,9 @@ static int spacemit_k1_platform_init(const void *fdt, int nodeoff,
 
 static const struct fdt_match spacemit_k1_match[] = {
 	{ .compatible = "spacemit,k1" },
+	/* SpacemiT U-Boot (pi-u-boot) device trees */
+	{ .compatible = "spacemit,k1x" },
+	{ .compatible = "spacemit,k1-x" },
 	{ /* sentinel */ }
 };
 

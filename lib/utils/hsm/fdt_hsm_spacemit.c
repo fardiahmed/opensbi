@@ -131,6 +131,9 @@ static int spacemit_hsm_probe(const void *fdt, int nodeoff, const struct fdt_mat
 
 static const struct fdt_match spacemit_hsm_match[] = {
 	{ .compatible = "spacemit,k1" },
+	/* SpacemiT U-Boot (pi-u-boot) device trees */
+	{ .compatible = "spacemit,k1x" },
+	{ .compatible = "spacemit,k1-x" },
 	{ },
 };
 
