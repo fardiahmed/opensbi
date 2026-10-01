@@ -12,6 +12,9 @@
 #include <sbi/sbi_hsm.h>
 #include <spacemit/k1.h>
 
+#define K1_UART0_IER		0xd4017004UL
+#define K1_UART_IER_UUE		0x40
+
 /* only use 0-1 cluster in SpacemiT K1 */
 static const int cci_map[] = {
 	PLAT_CCI_CLUSTER0_IFACE_IX,
@@ -76,6 +79,10 @@ static int spacemit_k1_early_init(bool cold_boot)
 	rc = generic_early_init(cold_boot);
 	if (rc)
 		return rc;
+
+	/* The PXA UART is off unless IER.UUE is set; the DT calls it "ns16550". */
+	if (cold_boot)
+		writel(readl((void *)K1_UART0_IER) | K1_UART_IER_UUE, (void *)K1_UART0_IER);
 
 	csr_set(CSR_MSETUP, MSETUP_DE | MSETUP_IE | MSETUP_BPE |
 		MSETUP_PFE | MSETUP_MME | MSETUP_ECCE);
