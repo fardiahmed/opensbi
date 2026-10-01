@@ -19,7 +19,8 @@
 
 #ifdef OPENSBI_CC_SUPPORT_VECTOR
 
-#define VLEN_MAX 65536
+/* mask[] lives on the 8 KiB hart stack; longer vectors are left to S-mode. */
+#define VLEN_MAX 1024
 
 static inline void set_vreg(ulong vlenb, ulong which,
 			    ulong pos, ulong size, const uint8_t *bytes)
